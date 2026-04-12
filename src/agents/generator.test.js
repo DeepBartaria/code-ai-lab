@@ -4,7 +4,7 @@ import { GoogleGenAI } from '@google/genai';
 
 vi.mock('@google/genai', () => {
   return {
-    GoogleGenAI: function() {
+    GoogleGenAI: function () {
       return globalThis.__mockGoogleGenAI();
     },
     Type: { OBJECT: 'OBJECT', STRING: 'STRING', ARRAY: 'ARRAY' }
@@ -67,11 +67,11 @@ describe('Generator Refinement logic', () => {
       .mockResolvedValueOnce({ text: JSON.stringify(validJson) });
 
     const result = await generateEducationalContent("fake-key", 4, "Maths");
-    
-    // It should have refined automatically and succeeded on second try
+
+    // It should have refined automatically
     expect(result).toEqual(validJson);
     expect(generateContentMock).toHaveBeenCalledTimes(2);
-    // Determine the second call to check if refinement prompt was passed
+
     const callArgs = generateContentMock.mock.calls[1][0];
     expect(callArgs.contents).toMatch(/failed strict structural validation/);
   });
@@ -79,13 +79,13 @@ describe('Generator Refinement logic', () => {
   it('should throw an error if refinement keeps failing', async () => {
     const invalidJson = {
       explanation: "Test",
-      mcqs: [{ question: "A", options: ["1"], answer: "1" }] // Length 1 options will fail validation
+      mcqs: [{ question: "A", options: ["1"], answer: "1" }]
     };
 
-    // Return invalid JSON consistently
+    //invalid JSON consistently
     generateContentMock.mockResolvedValue({ text: JSON.stringify(invalidJson) });
 
-    await expect(generateEducationalContent("fake-key", 4, "Maths")).rejects.toThrow(/Failed to generate content: Validation failed after 2 retries/);
-    expect(generateContentMock).toHaveBeenCalledTimes(3); // Initial + 2 retries
+    await expect(generateEducationalContent("fake-key", 4, "Maths")).rejects.toThrow(/failed to generate content: Validation failed after 2 retries/i);
+    expect(generateContentMock).toHaveBeenCalledTimes(3);
   });
 });

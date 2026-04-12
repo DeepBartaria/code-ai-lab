@@ -215,7 +215,7 @@ const SplashScreen = () => (
 );
 
 export default function App() {
-  const [apiKey] = useState('AIzaSyAgZPgmiLbrok1xHD2JLa40pqn4B1zfjeM');
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const [grade, setGrade] = useState(() => Number(localStorage.getItem('savedGrade')) || 4);
   const [topic, setTopic] = useState(() => localStorage.getItem('savedTopic') || 'Types of angles');
 

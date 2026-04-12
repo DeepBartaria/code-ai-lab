@@ -102,7 +102,7 @@ Do not include any conversational filler, output ONLY the requested JSON format.
         throw new Error("Validation failed after 2 retries: " + validationResult.error.message);
       }
       
-      const errorStrings = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`);
+      const errorStrings = validationResult.error.issues ? validationResult.error.issues.map(e => `${e.path.join('.')}: ${e.message}`) : [validationResult.error.message];
       console.warn("Zod validation failed, refining content...", errorStrings);
       
       const refinementPrompt = [
