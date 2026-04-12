@@ -216,12 +216,15 @@ const SplashScreen = () => (
 
 export default function App() {
   const [apiKey] = useState('AIzaSyAgZPgmiLbrok1xHD2JLa40pqn4B1zfjeM');
-  const [grade, setGrade] = useState(4);
-  const [topic, setTopic] = useState('Types of angles');
+  const [grade, setGrade] = useState(() => Number(localStorage.getItem('savedGrade')) || 4);
+  const [topic, setTopic] = useState(() => localStorage.getItem('savedTopic') || 'Types of angles');
 
   const [isGenerating, setIsGenerating] = useState(false);
-  const [activeStep, setActiveStep] = useState('IDLE');
-  const [log, setLog] = useState([]);
+  const [activeStep, setActiveStep] = useState(() => localStorage.getItem('savedActiveStep') || 'IDLE');
+  const [log, setLog] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('savedLog')) || []; }
+    catch { return []; }
+  });
 
   const [showSplash, setShowSplash] = useState(true);
 
@@ -230,8 +233,23 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const [currentPayload, setCurrentPayload] = useState(null);
-  const [currentReview, setCurrentReview] = useState(null);
+  const [currentPayload, setCurrentPayload] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('savedPayload')) || null; }
+    catch { return null; }
+  });
+  const [currentReview, setCurrentReview] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('savedReview')) || null; }
+    catch { return null; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('savedGrade', grade);
+    localStorage.setItem('savedTopic', topic);
+    localStorage.setItem('savedActiveStep', activeStep);
+    localStorage.setItem('savedLog', JSON.stringify(log));
+    localStorage.setItem('savedPayload', JSON.stringify(currentPayload));
+    localStorage.setItem('savedReview', JSON.stringify(currentReview));
+  }, [grade, topic, activeStep, log, currentPayload, currentReview]);
 
   const startPipeline = async () => {
     if (!apiKey) {
