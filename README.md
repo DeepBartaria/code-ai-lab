@@ -36,4 +36,4 @@ The system opts for a highly deterministic procedural `while` loop architecture 
    ```
 3. Start the UI: `npm install && npm run dev`.
 4. Start the backend API: `uvicorn backend.main:app --reload`.
-5. Run Tests: `pytest backend/test_pipeline.py`.
+5. Run Tests using Python 3.9: ` PYTHONPATH=. ./venv/bin/python -m pytest backend/test_pipeline.py -v`.
